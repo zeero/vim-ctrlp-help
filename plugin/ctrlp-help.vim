@@ -14,8 +14,8 @@ set cpo&vim
 if !exists('g:ctrlp_help_default_mode')
   let g:ctrlp_help_default_mode = 'e'
 endif
-if !exists('g:ctrlp_help_split_direction')
-  let g:ctrlp_help_split_direction = 'botright'
+if !exists('g:ctrlp_help_vsplit_direction')
+  let g:ctrlp_help_vsplit_direction = 'botright'
 endif
 if !exists('g:ctrlp_help_vsplit_width')
   let g:ctrlp_help_vsplit_width = 79

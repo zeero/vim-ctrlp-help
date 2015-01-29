@@ -105,12 +105,11 @@ endfunction
 function! ctrlp#help#accept(mode, str)
   call ctrlp#exit()
   let name = get(split(a:str, "\t"), 0)
-  if ("v" == a:mode || "v" == g:ctrlp_help_default_mode)
-  \   && !("v" == a:mode && "v" == g:ctrlp_help_default_mode)
-    exe g:ctrlp_help_split_direction . " vertical help " . name
+  if ("v" == a:mode || "v" == g:ctrlp_help_default_mode) && "h" != a:mode
+    exe g:ctrlp_help_vsplit_direction . " vertical help " . name
     exe "vertical resize " . g:ctrlp_help_vsplit_width
   else
-    exe g:ctrlp_help_split_direction . " help " . name
+    exe "help " . name
   endif
 endfunction
 
