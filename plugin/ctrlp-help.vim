@@ -11,6 +11,9 @@ let s:save_cpo = &cpo
 set cpo&vim
 
 " Variables
+if !exists('g:ctrlp_help_default_mode')
+  let g:ctrlp_help_default_mode = 'e'
+endif
 if !exists('g:ctrlp_help_split_direction')
   let g:ctrlp_help_split_direction = 'botright'
 endif
