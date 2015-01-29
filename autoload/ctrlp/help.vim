@@ -72,15 +72,30 @@ call add(g:ctrlp_ext_vars, {
 " Return: a Vim's List
 "
 function! ctrlp#help#init()
-  let input = [
-    \ 'Sed sodales fri magna, non egestas ante consequat nec.',
-    \ 'Aenean vel enim mattis ultricies erat.',
-    \ 'Donec vel ipsummauris euismod feugiat in ut augue.',
-    \ 'Aenean porttitous quam, id pellentesque diam adipiscing ut.',
-    \ 'Maecenas luctuss ipsum, vitae accumsan magna adipiscing sit amet.',
-    \ 'Nulla placerat  ante, feugiat egestas ligula fringilla vel.',
-    \ ]
-  return input
+  let tagspaths = []
+  for lang in split(&helplang, ",")
+    call add(tagspaths, "/doc/tags-" . lang)
+  endfor
+  call add(tagspaths, "/doc/tags")
+
+  let tagsfile = ""
+  for tagspath in tagspaths
+    let tagsfiles = map(filter(split(&rtp, ","), 'filereadable(v:val . tagspath)'), 'v:val . tagspath')
+    if !empty(tagsfiles)
+      let tagsfile = get(tagsfiles, 0)
+      break
+    endif
+  endfor
+
+"   let save_tags = &tags
+"   setlocal tags=tagsfile
+"
+"   let input = map(taglist("."), 'get(v:val, "name")')
+"
+"   setlocal tags=save_tags
+"   unlet save_tags
+
+  return filter(readfile(tagsfile), 'v:val !~ "!_TAG_"')
 endfunction
 
 
