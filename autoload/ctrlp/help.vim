@@ -1,6 +1,6 @@
 " =============================================================================
 " File:          autoload/ctrlp/help.vim
-" Description:   ctrlp.vim extension for vim help tags
+" Description:   CtrlP extension for vim help tags
 " =============================================================================
 
 " To load this extension into ctrlp, add this to your vimrc:
@@ -84,20 +84,12 @@ function! ctrlp#help#init()
 
   let tagsfile = ""
   for tagspath in tagspaths
-    let tagsfiles = map(filter(split(&rtp, ","), 'filereadable(v:val . tagspath)'), 'v:val . tagspath')
+    let tagsfiles = filter(map(split(&rtp, ","), 'v:val . tagspath'), 'filereadable(v:val)')
     if !empty(tagsfiles)
       let tagsfile = get(tagsfiles, 0)
       break
     endif
   endfor
-
-"   let save_tags = &tags
-"   setlocal tags=tagsfile
-"
-"   let input = map(taglist("."), 'get(v:val, "name")')
-"
-"   setlocal tags=save_tags
-"   unlet save_tags
 
   return filter(readfile(tagsfile), 'v:val !~ "!_TAG_"')
 endfunction
@@ -113,7 +105,12 @@ endfunction
 function! ctrlp#help#accept(mode, str)
   call ctrlp#exit()
   let name = get(split(a:str, "\t"), 0)
-  exe "help " . name
+  if "v" == a:mode
+    exe g:ctrlp_help_split_direction . " vertical help " . name
+    exe "vertical resize " . g:ctrlp_help_vsplit_width
+  else
+    exe g:ctrlp_help_split_direction . " help " . name
+  endif
 endfunction
 
 
