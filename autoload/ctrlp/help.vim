@@ -1,6 +1,6 @@
 " =============================================================================
 " File:          autoload/ctrlp/help.vim
-" Description:   Example extension for ctrlp.vim
+" Description:   ctrlp.vim extension for vim help tags
 " =============================================================================
 
 " To load this extension into ctrlp, add this to your vimrc:
@@ -107,9 +107,9 @@ endfunction
 "  a:str    the selected string
 "
 function! ctrlp#help#accept(mode, str)
-  " For this example, just exit ctrlp and run help
   call ctrlp#exit()
-  help ctrlp-extensions
+  let name = get(split(a:str, "\t"), 0)
+  exe "help " . name
 endfunction
 
 
