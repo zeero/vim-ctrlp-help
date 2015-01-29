@@ -74,7 +74,11 @@ call add(g:ctrlp_ext_vars, {
 function! ctrlp#help#init()
   let tagspaths = []
   for lang in split(&helplang, ",")
-    call add(tagspaths, "/doc/tags-" . lang)
+    if "en" == lang
+      call add(tagspaths, "/doc/tags")
+    else
+      call add(tagspaths, "/doc/tags-" . lang)
+    endif
   endfor
   call add(tagspaths, "/doc/tags")
 
