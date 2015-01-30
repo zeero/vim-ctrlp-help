@@ -74,24 +74,25 @@ call add(g:ctrlp_ext_vars, {
 function! ctrlp#help#init()
   let tagspaths = []
   for lang in split(&helplang, ",")
-    if "en" == lang
-      call add(tagspaths, "/doc/tags")
-    else
+    if "en" != lang
       call add(tagspaths, "/doc/tags-" . lang)
     endif
   endfor
   call add(tagspaths, "/doc/tags")
 
-  let tagsfile = ""
+  let input_dict = {}
   for tagspath in tagspaths
     let tagsfiles = filter(map(split(&rtp, ","), 'v:val . tagspath'), 'filereadable(v:val)')
-    if !empty(tagsfiles)
-      let tagsfile = get(tagsfiles, 0)
-      break
-    endif
+    for tagsfile in tagsfiles
+      for line in readfile(tagsfile)
+        let line_dict = {matchstr(line, '^[^\t]\+') : line}
+        call extend(input_dict, line_dict, "keep")
+      endfor
+    endfor
   endfor
+  call filter(input_dict, 'v:key !~ "^!_TAG_"')
 
-  return filter(readfile(tagsfile), 'v:val !~ "!_TAG_"')
+  return sort(values(input_dict))
 endfunction
 
 
