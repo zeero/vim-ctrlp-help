@@ -1,6 +1,4 @@
 " ctrlp-help - CtrlP extension for vim help tags
-" Version: 0.0.1
-" Author: zeero <zeero26@gmail.com>
 
 if exists('g:loaded_vim_ctrlp_help')
   finish

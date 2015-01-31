@@ -58,7 +58,7 @@ call add(g:ctrlp_ext_vars, {
   \ 'accept': 'ctrlp#help#accept',
   \ 'lname': 'help',
   \ 'sname': 'hlp',
-  \ 'type': 'line',
+  \ 'type': 'tabs',
   \ 'enter': 'ctrlp#help#enter()',
   \ 'exit': 'ctrlp#help#exit()',
   \ 'opts': 'ctrlp#help#opts()',
@@ -72,6 +72,38 @@ call add(g:ctrlp_ext_vars, {
 " Return: a Vim's List
 "
 function! ctrlp#help#init()
+  if get(g:, 'ctrlp_use_caching')
+    let cachedir = ctrlp#utils#cachedir() . ctrlp#utils#lash() . 'hlp'
+    let cachefile = cachedir . ctrlp#utils#lash() . 'cache.txt'
+    if getftime(cachefile) > max(map(s:gettagsfiles(), 'getftime(v:val)'))
+      return readfile(cachefile)
+    else
+      let input = s:getlist()
+      call ctrlp#utils#writecache(input, cachedir, cachefile)
+      return input
+    endif
+  endif
+
+  return s:getlist()
+endfunction
+
+function! s:getlist()
+  let tagsfiles = s:gettagsfiles()
+
+  let input_dict = {}
+  for tagsfile in tagsfiles
+    for line in readfile(tagsfile)
+      let line_dict = {matchstr(line, '^[^\t]\+') : line}
+      call extend(input_dict, line_dict, "keep")
+    endfor
+  endfor
+  call filter(input_dict, 'v:key !~ "^!_TAG_"')
+  let input = sort(values(input_dict))
+
+  return input
+endfunction
+
+function! s:gettagsfiles() "{{{
   let tagspaths = []
   for lang in split(&helplang, ",")
     if "en" != lang
@@ -80,20 +112,13 @@ function! ctrlp#help#init()
   endfor
   call add(tagspaths, "/doc/tags")
 
-  let input_dict = {}
+  let tagsfiles = []
   for tagspath in tagspaths
-    let tagsfiles = filter(map(split(&rtp, ","), 'v:val . tagspath'), 'filereadable(v:val)')
-    for tagsfile in tagsfiles
-      for line in readfile(tagsfile)
-        let line_dict = {matchstr(line, '^[^\t]\+') : line}
-        call extend(input_dict, line_dict, "keep")
-      endfor
-    endfor
+    call extend(tagsfiles, filter(map(split(&rtp, ","), 'v:val . tagspath'), 'filereadable(v:val)'))
   endfor
-  call filter(input_dict, 'v:key !~ "^!_TAG_"')
 
-  return sort(values(input_dict))
-endfunction
+  return tagsfiles
+endfunction "}}}
 
 
 " The action to perform on the selected string
