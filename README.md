@@ -1,4 +1,4 @@
 vim-ctrlp-help
 ==============
 
-CtrlP.vim plugin for vim help file.
+[CtrlP.vim](http://kien.github.io/ctrlp.vim/) plugin for vim help file.
