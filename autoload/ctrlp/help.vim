@@ -134,6 +134,8 @@ function! ctrlp#help#accept(mode, str)
   if ("v" == a:mode || "v" == g:ctrlp_help_default_mode) && "h" != a:mode
     exe g:ctrlp_help_vsplit_direction . " vertical help " . name
     exe "vertical resize " . g:ctrlp_help_vsplit_width
+  elseif ( "t" == a:mode || ("e" == a:mode && "t" == g:ctrlp_help_default_mode))
+    exe "tab help " . name
   else
     exe "help " . name
   endif
